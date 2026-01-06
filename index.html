@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue Tracker System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- For icons -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #ff9900 0%, #ff8800 100%);
+            color: white;
+            padding: 18px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 9px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar .left {
+            display: flex;
+            align-items: center;
+        }
+        .navbar .logo {
+            width: 55px;
+            height: 55px;
+            border-radius: 100%;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .navbar .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .navbar .headline {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            flex-grow: 1;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        .navbar .right {
+            display: flex;
+            align-items: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            background: rgba(177, 0, 133, 0.418);
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .login-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        .login-container input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .login-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .login-container button[type="button"] {
+            background: #f44336;
+            margin-top: 10px;
+        }
+        .login-container button[type="button"]:hover {
+            background: #da190b;
+        }
+        .hidden {
+            display: none;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        input, select, textarea {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: calc(50% - 15px);
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            resize: vertical;
+        }
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        button[type="button"] {
+            background: #f44336;
+        }
+        button[type="button"]:hover {
+            background: #da190b;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #e0f7fa;
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+        .admin-btn {
+            margin: 10px 0;
+            display: inline-block;
+        }
+        .switch-btn {
+            margin: 10px 0;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="left">
+            <div class="logo">
+                <img src="logo.png " alt="Left Logo"> 
+            </div>
+        </div>
+        <div class="headline">IS Complaint Resgister</div>
+        <div class="right">
+            <div class="logo">
+                <img src="golden.png" alt="Right Logo"> 
+            </div>
+        </div>
+    </div>
+
+    <div class="login-container hidden" id="login-container">
+        <h2><i class="fas fa-lock"></i> Admin Login</h2>
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button onclick="login()"><i class="fas fa-sign-in-alt"></i> Login</button>
+        <button type="button" onclick="cancelLogin()"><i class="fas fa-times"></i> Cancel</button>
+        <p>Admin credentials: admin / password</p>
+    </div>
+
+    <div class="container hidden" id="admin-view">
+        <h2><i class="fas fa-cogs"></i> Admin Panel - Add / Update Entry</h2>
+        <button class="switch-btn" onclick="showPublicView()"><i class="fas fa-eye"></i> Switch to Public View</button>
+        <form id="entry-form">
+            <input type="hidden" id="entry-id">
+            <input type="date" id="date" required placeholder="Date">
+            <input type="text" id="user" required placeholder="User">
+            <input type="text" id="department" required placeholder="Department">
+            <input type="tel" id="telephone" required placeholder="Telephone No">
+            <textarea id="problem" required placeholder="Problem"></textarea>
+            <input type="text" id="receivedBy" required placeholder="Received By">
+            <input type="text" id="rectifiedBy" required placeholder="Rectified By">
+            <textarea id="remarks" placeholder="Remarks"></textarea>
+            <button type="submit"><i class="fas fa-save"></i> Save</button>
+            <button type="button" id="cancel-btn"><i class="fas fa-times"></i> Cancel</button>
+        </form>
+
+        <table id="entries-table-admin">
+            <thead>
+                <tr>
+                    <th>Sl No</th>
+                    <th>Date</th>
+                    <th>User</th>
+                    <th>Department</th>
+                    <th>Telephone No</th>
+                    <th>Problem</th>
+                    <th>Received By</th>
+                    <th>Rectified By</th>
+                    <th>Remarks</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="entries-body-admin">
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container" id="public-view">
+        <h2><i class="fas fa-eye"></i> User Complaint Resgister</h2>
+        <button class="admin-btn" onclick="showLogin()"><i class="fas fa-user-shield"></i> Admin Login</button>
+
+        <table id="entries-table-public">
+            <thead>
+                <tr>
+                    <th>Sl No</th>
+                    <th>Date</th>
+                    <th>User</th>
+                    <th>Department</th>
+                    <th>Telephone No</th>
+                    <th>Problem</th>
+                    <th>Received By</th>
+                    <th>Rectified By</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody id="entries-body-public">
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const entriesKey = 'entries';
+        let entries = JSON.parse(localStorage.getItem(entriesKey)) || [];
+        let currentId = null;
+        let isAdmin = false;
+
+        const loginContainer = document.getElementById('login-container');
+        const adminView = document.getElementById('admin-view');
+        const publicView = document.getElementById('public-view');
+        const form = document.getElementById('entry-form');
+        const tableBodyAdmin = document.getElementById('entries-body-admin');
+        const tableBodyPublic = document.getElementById('entries-body-public');
+        const cancelBtn = document.getElementById('cancel-btn');
+
+        function showLogin() {
+            loginContainer.classList.remove('hidden');
+            publicView.classList.add('hidden');
+        }
+
+        function cancelLogin() {
+            loginContainer.classList.add('hidden');
+            publicView.classList.remove('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username === 'admin' && password === 'password') {
+                isAdmin = true;
+                showAdminView();
+            } else {
+                alert('Invalid credentials. Try again.');
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        function showAdminView() {
+            loginContainer.classList.add('hidden');
+            adminView.classList.remove('hidden');
+            publicView.classList.add('hidden');
+            renderTableAdmin();
+        }
+
+        function showPublicView() {
+            loginContainer.classList.add('hidden');
+            adminView.classList.add('hidden');
+            publicView.classList.remove('hidden');
+            renderTablePublic();
+        }
+
+        function renderTableAdmin() {
+            tableBodyAdmin.innerHTML = '';
+            entries.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${entry.date}</td>
+                    <td>${entry.user}</td>
+                    <td>${entry.department}</td>
+                    <td>${entry.telephone}</td>
+                    <td>${entry.problem}</td>
+                    <td>${entry.receivedBy}</td>
+                    <td>${entry.rectifiedBy}</td>
+                    <td>${entry.remarks}</td>
+                    <td>
+                        <button onclick="editEntry(${index})"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="deleteEntry(${index})"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                `;
+                tableBodyAdmin.appendChild(row);
+            });
+        }
+
+        function renderTablePublic() {
+            tableBodyPublic.innerHTML = '';
+            entries.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${entry.date}</td>
+                    <td>${entry.user}</td>
+                    <td>${entry.department}</td>
+                    <td>${entry.telephone}</td>
+                    <td>${entry.problem}</td>
+                    <td>${entry.receivedBy}</td>
+                    <td>${entry.rectifiedBy}</td>
+                    <td>${entry.remarks}</td>
+                `;
+                tableBodyPublic.appendChild(row);
+            });
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem(entriesKey, JSON.stringify(entries));
+        }
+
+        function resetForm() {
+            form.reset();
+            currentId = null;
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const entry = {
+                date: document.getElementById('date').value,
+                user: document.getElementById('user').value,
+                department: document.getElementById('department').value,
+                telephone: document.getElementById('telephone').value,
+                problem: document.getElementById('problem').value,
+                receivedBy: document.getElementById('receivedBy').value,
+                rectifiedBy: document.getElementById('rectifiedBy').value,
+                remarks: document.getElementById('remarks').value
+            };
+            if (currentId !== null) {
+                entries[currentId] = entry;
+            } else {
+                entries.push(entry);
+            }
+            saveToLocalStorage();
+            renderTableAdmin();
+            resetForm();
+        });
+
+        cancelBtn.addEventListener('click', resetForm);
+
+        function editEntry(index) {
+            const entry = entries[index];
+            document.getElementById('date').value = entry.date;
+            document.getElementById('user').value = entry.user;
+            document.getElementById('department').value = entry.department;
+            document.getElementById('telephone').value = entry.telephone;
+            document.getElementById('problem').value = entry.problem;
+            document.getElementById('receivedBy').value = entry.receivedBy;
+            document.getElementById('rectifiedBy').value = entry.rectifiedBy;
+            document.getElementById('remarks').value = entry.remarks;
+            currentId = index;
+        }
+
+        function deleteEntry(index) {
+            if (confirm('Are you sure you want to delete this entry?')) {
+                entries.splice(index, 1);
+                saveToLocalStorage();
+                renderTableAdmin();
+            }
+        }
+
+        // Initial load: Show public view
+        showPublicView();
+    </script>
+</body>
+</html>
