@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Issue Tracker System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!-- For icons -->
     <style>
         body {
@@ -225,6 +226,7 @@
 
     <div class="container hidden" id="admin-view">
         <h2><i class="fas fa-cogs"></i> Admin Panel - Add / Update Entry</h2>
+        <button onclick="downloadExcel()">⬇ Download Excel</button>
         <button class="switch-btn" onclick="showPublicView()"><i class="fas fa-eye"></i> Switch to Public View</button>
         <form id="entry-form">
             <input type="hidden" id="entry-id">
@@ -436,7 +438,28 @@
 
         // Initial load: Show public view
         showPublicView();
+
+        function downloadExcel() {
+    const data = entries.map((e, i) => ({
+        "Sl No": i + 1,
+        "Date": e.date,
+        "User": e.user,
+        "Department": e.department,
+        "Telephone No": e.telephone,
+        "Problem": e.problem,
+        "Received By": e.receivedBy,
+        "Rectified By": e.rectifiedBy,
+        "Remarks": e.remarks
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Complaints");
+
+    XLSX.writeFile(workbook, "Complaint_Register.xlsx");
+    }
     </script>
 </body>
 
 </html>
+
